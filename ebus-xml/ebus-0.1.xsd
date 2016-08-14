@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://xapek.org/ebus/0.1"
+  xmlns:tns="http://xapek.org/ebus/0.1" elementFormDefault="qualified">
+  <element name="ebus">
+    <complexType>
+      <sequence>
+        <element name="devices">
+          <complexType>
+            <sequence minOccurs="0">
+              <element name="device" type="tns:DEVICE"
+                maxOccurs="unbounded" />
+            </sequence>
+          </complexType>
+        </element>
+        <element name="packets">
+          <complexType>
+            <sequence minOccurs="0">
+              <element name="packet" type="tns:PACKET"
+                maxOccurs="unbounded" />
+            </sequence>
+          </complexType>
+        </element>
+      </sequence>
+    </complexType>
+  </element>
+
+  <complexType name="DEVICE">
+    <annotation>
+      <documentation xml:lang="en">
+        Example: &gt;device
+        address="#x10" type="master"
+        name="heizkreisregler1"&lt;Heizkreisregler 2&gt;/device&lt;
+      </documentation>
+    </annotation>
+    <sequence>
+      <element name="description" type="tns:DESCRIPTION"
+        minOccurs="0" maxOccurs="unbounded" />
+    </sequence>
+    <attribute name="address" type="short" use="required" />
+    <attribute name="type" type="string" use="required" />
+    <attribute name="name" type="string" use="required" />
+  </complexType>
+
+  <complexType name="PACKET">
+    <annotation>
+      <documentation xml:lang="en">TODO</documentation>
+    </annotation>
+    <sequence>
+      <element name="description" type="tns:DESCRIPTION"
+        minOccurs="0" maxOccurs="unbounded" />
+      <element name="fields" type="tns:FIELDS" minOccurs="1"
+        maxOccurs="1" />
+    </sequence>
+    <attribute name="primary" type="short" use="required" />
+    <attribute name="secondary" type="short" use="required" />
+    <attribute name="name" type="string" use="required" />
+  </complexType>
+
+  <complexType name="DESCRIPTION">
+    <simpleContent>
+      <extension base="string">
+        <attribute name="lang" type="string" use="required" />
+      </extension>
+    </simpleContent>
+  </complexType>
+
+  <complexType name="FIELDS">
+    <choice minOccurs="0" maxOccurs="unbounded">
+      <element name="byte" type="tns:FIELD_BYTE" />
+      <element name="data1b" type="tns:FIELD_DATA1B"></element>
+      <element name="data1c" type="tns:FIELD_DATA1C"></element>
+      <element name="bcd" type="tns:FIELD_BCD"></element>
+      <element name="data2b" type="tns:FIELD_DATA2B"></element>
+      <element name="data2c" type="tns:FIELD_DATA2C"></element>
+      <element name="word" type="tns:FIELD_WORD"></element>
+      <element name="bit" type="tns:FIELD_BIT"></element>
+      <element name="byteEnum" type="tns:FIELD_BYTE_ENUM" />
+    </choice>
+  </complexType>
+
+  <complexType name="FIELD_BASE_TYPE">
+    <sequence>
+      <element name="description" type="tns:DESCRIPTION"
+        minOccurs="0" maxOccurs="unbounded" />
+    </sequence>
+    <attribute name="offset" type="int" use="required" />
+    <attribute name="name" type="string" use="required" />
+  </complexType>
+
+
+
+  <complexType name="FIELD_BYTE" final="#all">
+    <complexContent>
+      <extension base="tns:FIELD_BASE_TYPE"></extension>
+    </complexContent>
+  </complexType>
+
+  <complexType name="FIELD_DATA1B">
+    <complexContent>
+      <extension base="tns:FIELD_BASE_TYPE"></extension>
+    </complexContent>
+  </complexType>
+
+  <complexType name="FIELD_DATA1C">
+    <complexContent>
+      <extension base="tns:FIELD_BASE_TYPE"></extension>
+    </complexContent>
+  </complexType>
+
+  <complexType name="FIELD_BCD">
+    <complexContent>
+      <extension base="tns:FIELD_BASE_TYPE"></extension>
+    </complexContent>
+  </complexType>
+
+  <complexType name="FIELD_DATA2B">
+    <complexContent>
+      <extension base="tns:FIELD_BASE_TYPE"></extension>
+    </complexContent>
+  </complexType>
+
+  <complexType name="FIELD_DATA2C">
+    <complexContent>
+      <extension base="tns:FIELD_BASE_TYPE"></extension>
+    </complexContent>
+  </complexType>
+
+  <complexType name="FIELD_WORD">
+    <complexContent>
+      <extension base="tns:FIELD_BASE_TYPE"></extension>
+    </complexContent>
+  </complexType>
+
+  <complexType name="FIELD_BIT">
+    <complexContent>
+      <extension base="tns:FIELD_BASE_TYPE"></extension>
+    </complexContent>
+  </complexType>
+
+  <complexType name="FIELD_BYTE_ENUM" final="#all">
+    <complexContent>
+      <extension base="tns:FIELD_BASE_TYPE">
+        <sequence>
+          <element name="option" minOccurs="1" maxOccurs="unbounded">
+            <complexType>
+              <sequence>
+                <element name="description" type="tns:DESCRIPTION"
+                  minOccurs="0" maxOccurs="unbounded" />
+              </sequence>
+              <attribute name="value" type="short" use="required"></attribute>
+              <attribute name="name" type="string" use="required"></attribute>
+            </complexType>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+</schema>

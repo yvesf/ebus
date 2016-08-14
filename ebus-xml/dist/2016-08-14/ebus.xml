@@ -1,0 +1,258 @@
+<?xml version="1.0" standalone="yes"?>
+<!-- Ebus Paketspezifikation. https://xapek.org/ -->
+<ebus xmlns="http://xapek.org/ebus/0.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://xapek.org/ebus/0.1 ebus-0.1.xsd">
+  <devices>
+    <device address="0" type="master" name="pcModem">
+      <description lang="de">PC oder Modem</description>
+      <description lang="en">PC or Modem</description>
+    </device>
+    <device address="3" type="master" name="feuerungsautomat1">
+      <description lang="de">Feuerungsautomat 1</description>
+    </device>
+    <device address="10" type="master" name="rcClockModel">
+      <description lang="de">RC-Clock Model</description>
+    </device>
+    <device address="7" type="master" name="unknown">
+      <description lang="de">Unbekannt</description>
+    </device>
+    <device address="16" type="master" name="heizkreisregler2">
+      <description lang="de">Heizkreisregler 2</description>
+    </device>
+    <device address="17" type="master" name="busInterface1">
+      <description lang="de">Bus Interface 1</description>
+    </device>
+    <device address="19" type="master" name="feuerungsautomat2">
+      <description lang="de">Feuerungsautomat 2</description>
+    </device>
+    <device address="48" type="master" name="heizkreisregler1">
+      <description lang="de">Heizkreisregler 1</description>
+    </device>
+    <device address="49" type="master" name="busInterface2">
+      <description lang="de">Bus Interface 2</description>
+    </device>
+    <device address="51" type="master" name="feuerungsautomat3">
+      <description lang="de">Feuerungsautomat 3</description>
+    </device>
+    <device address="112" type="master" name="heizkreisregler2">
+      <description lang="de">Heizkreisregler 2</description>
+    </device>
+    <device address="113" type="master" name="heizkreisregler9">
+      <description lang="de">Heizkreisregler 9</description>
+    </device>
+    <device address="115" type="master" name="feuerungsautomat4">
+      <description lang="de">Feuerungsautomat 4</description>
+    </device>
+    <device address="241" type="master" name="heizkreisregler10">
+      <description lang="de">Heizkreisregler 10</description>
+    </device>
+    <device address="80" type="slave" name="mischer1">
+      <description lang="de">Mischer 1</description>
+    </device>
+    <device address="81" type="slave" name="mischer2">
+      <description lang="de">Mischer 2</description>
+    </device>
+    <device address="144" type="slave" name="fernsteller1">
+      <description lang="de">Raumgeräte/Fernsteller 1</description>
+    </device>
+    <device address="145" type="slave" name="fernsteller2">
+      <description lang="de">Raumgeräte/Fernsteller 2</description>
+    </device>
+    <device address="240" type="master" name="heizkreisregler3">
+      <description lang="de">Heizkreisregler 3</description>
+    </device>
+    <device address="240" type="master" name="feuerungsautomat5">
+      <description lang="de">Feuerungsautomat 5</description>
+    </device>
+    <device address="254" type="broadcast" name="broadcast">
+      <description lang="de">Broadcast-Adresse</description>
+    </device>
+    <device address="255" type="master" name="pc">
+      <description lang="de">PC</description>
+    </device>
+  </devices>
+  <packets>
+    <packet primary="5" secondary="3" name="betriebsdatenRegler1">
+      <description lang="de">Betriebsdaten des Feuerungsautomaten an den Regler Block1</description>
+      <fields>
+        <byte offset="3" name="stellgradKesselleistung">
+          <description lang="de">Stellgrad Kesselleistung</description>
+        </byte>
+        <data1c offset="4" name="kesselTemperatur">
+          <description lang="de">Kessel Temperatur</description>
+        </data1c>
+        <byte offset="5" name="ruecklaufTemperatur">
+          <description lang="de">Rücklauf Temperatur</description>
+        </byte>
+        <byte offset="6" name="boilerTemperatur">
+          <description lang="de">Boiler Temperatur</description>
+        </byte>
+        <data1b offset="7" name="aussenTemperatur">
+			<description lang="de">Aussentemperatur</description>
+        </data1b>
+      </fields>
+    </packet>
+    <packet primary="5" secondary="7"
+      name="betriebsdatenFeuerungsautomat">
+      <description lang="de">"Betriebsdaten des Reglers an den Feuerungsautomaten</description>
+      <fields>
+        <byteEnum offset="0" name="betriebszustand">
+          <option value="0" name="brennerAbschalten">
+            <description lang="de">Brenner Abschalten</description>
+          </option>
+          <option value="1" name="keineAktion">
+            <description lang="de">Keine Aktion</description>
+          </option>
+          <option value="85" name="brauchwasserbereitung">
+            <description lang="de">Brauchwasserbereitung</description>
+          </option>
+          <option value="170" name="heizbetrieb">
+            <description lang="de">Heizbetrieb</description>
+          </option>
+          <option value="204" name="emissionskontrolle">
+            <description lang="de">Emissionskontrolle</description>
+          </option>
+          <option value="221" name="tuevFunktion">
+            <description lang="de">TÜV Funktion</description>
+          </option>
+          <option value="238" name="reglerStopp">
+            <description lang="de">Regler Stopp</description>
+          </option>
+          <option value="102" name="brauchwasserReglerstopp">
+            <description lang="de">Brauchwasserbereitung bei Reglerstoppfunktion</description>
+          </option>
+          <option value="187" name="brauchwasserHeizbetrieb">
+            <description lang="de">Brauchwasserbereitung bei Heizbetrieb</description>
+          </option>
+          <option value="68" name="reglerstoppStufig">
+            <description lang="de">Reglerstoppfunktion bei stufigem Betrieb</description>
+          </option>
+        </byteEnum>
+        <byteEnum offset="1" name="aktion">
+          <option value="0" name="keineAktion">
+            <description lang="de">Keine Aktion</description>
+          </option>
+          <option value="1" name="ausschaltenKesselpumpe">
+            <description lang="de">Ausschalten Kesselpumpe</description>
+          </option>
+          <option value="2" name="einschaltenKesselpumpe">
+            <description lang="de">Einschalten Kesselpumpe</description>
+          </option>
+          <option value="3" name="ausschaltenVariableVerbraucher">
+            <description lang="de">Ausschalten variable Verbraucher</description>
+          </option>
+          <option value="4" name="einschaltenVariableVerbraucher">
+            <description lang="de">Einschalten variable Verbraucher</description>
+          </option>
+        </byteEnum>
+        <data2c offset="2" name="kesselSollwertTemperatur">
+          <description lang="de">Kessel Temperatur Sollwert</description>
+        </data2c>
+        <data2b offset="4" name="kesselSollwertDruck">
+          <description lang="de">Kesseldruck Sollwert</description>
+        </data2b>
+        <data1c offset="6" name="stellgrad">
+          <description lang="de">Stellgrad</description>
+        </data1c>
+        <data1c offset="7" name="brauchwasserSollwert">
+          <description lang="de">Brauchwasser Sollwert</description>
+        </data1c>
+      </fields>
+    </packet>
+
+    <packet primary="7" secondary="0" name="datumZeit">
+      <description lang="de">Datum/Zeit Meldung eines eBus Master</description>
+      <fields>
+        <data2b offset="0" name="aussenTemperatur" />
+        <bcd offset="2" name="sekunden" />
+        <bcd offset="3" name="minuten" /><!-- FEHLER ab hier beim offset??? -->
+        <bcd offset="4" name="stunden" />
+        <bcd offset="5" name="tag" />
+        <bcd offset="6" name="monat" />
+        <bcd offset="7" name="wochentag" />
+        <bcd offset="8" name="jahr" />
+      </fields>
+    </packet>
+
+    <packet primary="8" secondary="0" name="sollwertuebertragungRegler">
+      <description lang="de">Sollwertübertragung des Reglers an andere Regler</description>
+      <fields>
+        <data2b offset="0" name="TK_soll">
+          <description lang="de">Kessel Sollwert in °C [1/256]</description>
+        </data2b>
+        <data2b offset="2" name="TA_ist">
+          <description lang="de">Aussentemperatur in °C [1/256]</description>
+        </data2b>
+        <data1b offset="4" name="L_zwang">
+          <description lang="de">Leistungszwang in Prozent</description>
+        </data1b>
+        <bit offset="5" name="Status">
+          <description lang="de">Status</description>
+        </bit>
+        <data2b offset="6" name="TB_soll">
+          <description lang="de">Brauchwassersollwert</description>
+        </data2b>
+      </fields>
+    </packet>
+
+    <packet primary="3" secondary="8" name="brenstoffmengeLesen">
+      <description lang="de">Gesamtbrennstoffmenge Lesen</description>
+      <fields />
+    </packet>
+
+    <!-- #x50, Kromschröder Spezial -->
+    <packet primary="80" secondary="20" name="vorlauftemperatur">
+      <description lang="de">Reversed from http://www.mikrocontroller.net/topic/91164#1070401</description>
+      <fields>
+        <data2b offset="0" name="vorlauftemperaturIst">
+          <description lang="de">Aktuelle Vorlauftemperatur
+            Mischerkreis</description>
+        </data2b>
+        <data2b offset="2" name="vorlauftemperaturSoll">
+          <description lang="de">Soll Vorlaufteperatur
+            Mischerkreis</description>
+        </data2b>
+      </fields>
+    </packet>
+
+    <packet primary="80" secondary="23" name="solarDaten">
+      <description lang="de">Solar Daten</description>
+      <fields>
+        <bit offset="0" name="solarPumpe">
+          <description lang="de">Betriebszustand Solarpumpe</description>
+        </bit>
+        <data2c offset="2" name="tempKollektor">
+          <description lang="de">>Wassertemperatur am Kollektor</description>
+        </data2c>
+        <data2c offset="4" name="tempWarmwasserSolar">
+          <description lang="de">Warmwassertemperatur am
+            Kollektor</description>
+        </data2c>
+      </fields>
+    </packet>
+
+    <packet primary="80" secondary="24" name="solarDatenSumme">
+      <description lang="de">Reversed siehe ebus-wiki</description>
+      <fields>
+        <data2b offset="0" name="aktuelleLeistung">
+          <description lang="de">Aktuelle Solarleistung</description>
+        </data2b>
+        <word offset="2" name="tagesertragLow">
+          <description lang="de">Tagesertrag low</description>
+        </word>
+        <word offset="4" name="tagesertragHigh">
+          <description lang="de">Tagesertrag high * 1000</description>
+        </word>
+        <word offset="6" name="ertragssumme">
+          <description lang="de">Ertragssumme</description>
+        </word>
+        <word offset="8" name="ertragssummeT">
+          <description lang="de">Ertragssumme T * 1000</description>
+        </word>
+        <word offset="10" name="ertragssummeM">
+          <description lang="de">Etragssumme M * 1000 * 1000</description>
+        </word>
+      </fields>
+    </packet>
+  </packets>
+</ebus>
