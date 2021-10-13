@@ -75,6 +75,7 @@
       <element name="word" type="tns:FIELD_WORD"></element>
       <element name="bit" type="tns:FIELD_BIT"></element>
       <element name="byteEnum" type="tns:FIELD_BYTE_ENUM" />
+      <element name="string" type="tns:FIELD_STRING" />
     </choice>
   </complexType>
 
@@ -152,6 +153,14 @@
             </complexType>
           </element>
         </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  
+  <complexType name="FIELD_STRING">
+    <complexContent>
+      <extension base="tns:FIELD_BASE_TYPE">
+        <attribute name="length" type="short" use="required" />
       </extension>
     </complexContent>
   </complexType>

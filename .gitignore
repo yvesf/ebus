@@ -1,3 +1,5 @@
 *~
 /ebus-xml/build
 /ebus-racket/**/compiled
+/ebus-rust/target
+.*

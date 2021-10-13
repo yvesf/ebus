@@ -1,9 +1,5 @@
-# Ebus Tools
+# eBus
 
-## ebus-racket
-
-Ebus protocol parser written in [racket](http://www.racket-lang.org).
-
-## ebus-xml
-
-Ebus protocol specification (devices, packets, fields) in xml.
+- [ebus-racket](ebus-racket/) eBus protocol parser written in racket
+- [ebus-rust](ebus-rust/) eBus protocol parser writtin in rust
+- [ebus-xml](ebus-xml/) eBus protocol specification (devices, packets, fields) in xml.
