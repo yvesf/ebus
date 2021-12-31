@@ -1,0 +1,16 @@
+[package]
+name = "ebus"
+version = "0.1.0"
+authors = ["Yves Fischer <yvesf+git@xapek.org>"]
+edition = "2018"
+
+[dependencies]
+serde = { version = "1.0", features = [ "derive" ] }
+quick-xml = { version = "0.22", features = [ "serialize" ] }
+nom = "7"
+structopt = "0.3"
+bytes = "1"
+env_logger = "0.9"
+log = "0.4"
+rinfluxdb = "0.1"
+url = "2"

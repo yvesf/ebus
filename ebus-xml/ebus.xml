@@ -1,7 +1,6 @@
 <?xml version="1.0" standalone="yes"?>
 <!-- Ebus Paketspezifikation. https://xapek.org/ -->
-<ebus xmlns="http://xapek.org/ebus/0.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://xapek.org/ebus/0.1 ebus-0.1.xsd">
+<ebus xmlns="http://xapek.org/ebus/0.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xapek.org/ebus/0.1 ebus-0.1.xsd">
   <devices>
     <device address="0" type="master" name="pcModem">
       <description lang="de">PC oder Modem</description>
@@ -72,6 +71,9 @@
     </device>
   </devices>
   <packets>
+    <packet primary="3" secondary="1" name="unknown-3h-1h">
+      <fields />
+    </packet>
     <packet primary="5" secondary="3" name="betriebsdatenRegler1">
       <description lang="de">Betriebsdaten des Feuerungsautomaten an den Regler Block1</description>
       <fields>
@@ -88,7 +90,7 @@
           <description lang="de">Boiler Temperatur</description>
         </byte>
         <data1b offset="7" name="aussenTemperatur">
-			<description lang="de">Aussentemperatur</description>
+          <description lang="de">Aussentemperatur</description>
         </data1b>
       </fields>
     </packet>
@@ -164,12 +166,23 @@
       <fields>
         <data2b offset="0" name="aussenTemperatur" />
         <bcd offset="2" name="sekunden" />
-        <bcd offset="3" name="minuten" /><!-- FEHLER ab hier beim offset??? -->
+        <bcd offset="3" name="minuten" /> <!-- FEHLER ab hier beim offset??? -->
         <bcd offset="4" name="stunden" />
         <bcd offset="5" name="tag" />
         <bcd offset="6" name="monat" />
         <bcd offset="7" name="wochentag" />
         <bcd offset="8" name="jahr" />
+      </fields>
+    </packet>
+
+    <packet primary="7" secondary="4" name="identifikation">
+      <fields>
+        <byte offset="0" name="hersteller" />
+        <string offset="1" name="device" length="5" />
+        <bcd offset="7" name="softwareversion" />
+        <bcd offset="8" name="softwarerevision" />
+        <bcd offset="9" name="hardwareversion" />
+        <bcd offset="10" name="hardwarerevision" />
       </fields>
     </packet>
 
@@ -250,6 +263,32 @@
         <word offset="10" name="ertragssummeM">
           <description lang="de">Etragssumme M * 1000 * 1000</description>
         </word>
+      </fields>
+    </packet>
+
+    <packet primary="80" secondary="18" name="unknown-50h-12h">
+      <fields />
+    </packet>
+
+    <packet primary="80" secondary="22" name="unknown-50h-16h">
+      <fields />
+    </packet>
+
+    <packet primary="80" secondary="34" name="unknown-50h-22h">
+      <fields />
+    </packet>
+
+    <packet primary="80" secondary="35" name="unknown-50h-23h">
+      <fields />
+    </packet>
+
+    <packet primary="80" secondary="80" name="unknown-50h-50h">
+      <fields />
+    </packet>
+
+    <packet primary="254" secondary="1" name="unknown3">
+      <fields>
+        <string offset="0" name="statusstring" length="10" />
       </fields>
     </packet>
   </packets>
