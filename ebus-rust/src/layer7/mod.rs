@@ -9,38 +9,44 @@ pub struct DecodedField {
 }
 
 pub fn decode_fields(p: &layer2::Packet, fields: &[model::PacketField]) -> Vec<DecodedField> {
+    let payload = p.payload_decoded();
+    let payload_slave = p.payload_slave_decoded();
     fields
         .iter()
         .map(|f| {
+            // A field read from the slave's answer decodes to None if the
+            // packet has no answer.
+            let data = match f.source() {
+                model::FieldSource::Master => &payload,
+                model::FieldSource::Slave => &payload_slave,
+            };
             let r = |decoder: &dyn Fn(&[u8]) -> Option<types::Value>,
                      offset: &u8,
                      name: &String| DecodedField {
-                v: decoder(
-                    p.payload_decoded()
-                        .get((*offset as usize)..)
-                        .unwrap_or(&[0; 0]),
-                ),
+                v: decoder(data.get((*offset as usize)..).unwrap_or(&[0; 0])),
                 name: name.clone(),
                 field: f.clone(),
             };
             match f {
-                model::PacketField::Byte { offset, name } => r(&types::byte, offset, name),
-                model::PacketField::Data1b { offset, name } => r(&types::data1b, offset, name),
-                model::PacketField::Data1c { offset, name } => r(&types::data1c, offset, name),
-                model::PacketField::Data2b { offset, name } => r(&types::data2b, offset, name),
-                model::PacketField::Data2c { offset, name } => r(&types::data2c, offset, name),
+                model::PacketField::Byte { offset, name, .. } => r(&types::byte, offset, name),
+                model::PacketField::Data1b { offset, name, .. } => r(&types::data1b, offset, name),
+                model::PacketField::Data1c { offset, name, .. } => r(&types::data1c, offset, name),
+                model::PacketField::Data2b { offset, name, .. } => r(&types::data2b, offset, name),
+                model::PacketField::Data2c { offset, name, .. } => r(&types::data2c, offset, name),
                 model::PacketField::ByteEnum {
                     offset,
                     name,
                     options,
+                    ..
                 } => r(&(move |data| types::byteenum(data, options)), offset, name),
-                model::PacketField::Bcd { offset, name } => r(&types::bcd, offset, name),
-                model::PacketField::Bit { offset, name } => r(&types::bit, offset, name),
-                model::PacketField::Word { offset, name } => r(&types::word, offset, name),
+                model::PacketField::Bcd { offset, name, .. } => r(&types::bcd, offset, name),
+                model::PacketField::Bit { offset, name, .. } => r(&types::bit, offset, name),
+                model::PacketField::Word { offset, name, .. } => r(&types::word, offset, name),
                 model::PacketField::String {
                     offset,
                     name,
                     length,
+                    ..
                 } => r(
                     &(move |data| types::string(data, *length as usize)),
                     offset,
@@ -85,6 +91,39 @@ mod tests {
         let pack = conf.packets.get(l2p.primary, l2p.secondary).unwrap();
         let values = decode_fields(&l2p, pack.fields.fields.as_ref().unwrap());
         assert_eq!("stellgradKesselleistung=<None>,kesselTemperatur=39,ruecklaufTemperatur=<None>,boilerTemperatur=53,aussenTemperatur=11", tostring(values));
+    }
+
+    #[test]
+    fn test_field_from_slave() {
+        let conf = model::read_config(EBUS_XML).unwrap();
+        // 50h 14h: the setpoint is in the master's payload, the measured
+        // value in the answer of the mixer module
+        let data = [
+            0xaa, 0x70, 0x51, 0x50, 0x14, 0x07, // source, destination, command, length
+            0x03, 0x00, 0x26, 0x9a, 0x1f, 0x00, 0x64, // payload master
+            0x88, 0x00, 0x09, // crc, ack, length slave
+            0x00, 0xa1, 0x80, 0x25, 0x00, 0xd8, 0x06, 0x96, 0x00, // payload slave
+            0xe0, 0x00, 0xaa, // crc, ack, syn
+        ];
+        let l2p = layer2::parse(&data[..]).unwrap();
+        let pack = conf.packets.get(l2p.primary, l2p.secondary).unwrap();
+        let values = decode_fields(&l2p, pack.fields.fields.as_ref().unwrap());
+        assert_eq!(
+            "vorlauftemperaturIst=37.5,vorlauftemperaturSoll=38",
+            tostring(values)
+        );
+
+        // without an answer only the setpoint is known
+        let data = [
+            0xaa, 0x70, 0x51, 0x50, 0x14, 0x07, 0x03, 0x00, 0x26, 0x9a, 0x1f, 0x00, 0x64, 0x88,
+            0x00, 0xaa,
+        ];
+        let l2p = layer2::parse(&data[..]).unwrap();
+        let values = decode_fields(&l2p, pack.fields.fields.as_ref().unwrap());
+        assert_eq!(
+            "vorlauftemperaturIst=<None>,vorlauftemperaturSoll=38",
+            tostring(values)
+        );
     }
 
     #[test]

@@ -23,27 +23,13 @@ pub struct Packet {
 impl Packet {
     // payload returns the un-escaped payload
     pub fn payload_decoded(&self) -> Vec<u8> {
-        let mut v = Vec::new();
-        let mut i = 0;
+        unescape(&self.payload)
+    }
 
-        while i < self.payload.len() {
-            let c = self.payload[i];
-            if c == EBUS_ESCAPE && i + 1 < self.payload.len() {
-                i += 1;
-                let c = self.payload[i];
-                if c == 0x0 {
-                    v.push(EBUS_ESCAPE);
-                } else if c == 0x1 {
-                    v.push(EBUS_SYN);
-                } else {
-                    v.push(c);
-                }
-            } else {
-                v.push(c);
-            }
-            i += 1;
-        }
-        v
+    // payload_slave_decoded returns the un-escaped payload of the slave's
+    // answer; it is empty if the packet has no answer
+    pub fn payload_slave_decoded(&self) -> Vec<u8> {
+        unescape(&self.payload_slave)
     }
 
     pub fn calc_crc(&self) -> u8 {
@@ -56,6 +42,30 @@ impl Packet {
         ];
         crc::crc(&[&x[..], self.payload.as_slice()].concat())
     }
+}
+
+fn unescape(payload: &[u8]) -> Vec<u8> {
+    let mut v = Vec::new();
+    let mut i = 0;
+
+    while i < payload.len() {
+        let c = payload[i];
+        if c == EBUS_ESCAPE && i + 1 < payload.len() {
+            i += 1;
+            let c = payload[i];
+            if c == 0x0 {
+                v.push(EBUS_ESCAPE);
+            } else if c == 0x1 {
+                v.push(EBUS_SYN);
+            } else {
+                v.push(c);
+            }
+        } else {
+            v.push(c);
+        }
+        i += 1;
+    }
+    v
 }
 
 impl fmt::Debug for Packet {

@@ -56,37 +56,113 @@ impl ByteEnumList {
     }
 }
 
+/// Which part of a packet a field is read from: the master's payload
+/// (the default) or the payload of the slave's answer (`from="slave"`).
+#[derive(Debug, Deserialize, PartialEq, Clone, Copy)]
+#[serde(rename_all = "lowercase")]
+pub enum FieldSource {
+    Master,
+    Slave,
+}
+
+impl Default for FieldSource {
+    fn default() -> Self {
+        FieldSource::Master
+    }
+}
+
 #[derive(Debug, Deserialize, PartialEq, Clone)]
 pub enum PacketField {
     #[serde(rename = "byte")]
-    Byte { offset: u8, name: String },
+    Byte {
+        offset: u8,
+        name: String,
+        #[serde(default)]
+        from: FieldSource,
+    },
     #[serde(rename = "data1b")]
-    Data1b { offset: u8, name: String },
+    Data1b {
+        offset: u8,
+        name: String,
+        #[serde(default)]
+        from: FieldSource,
+    },
     #[serde(rename = "data1c")]
-    Data1c { offset: u8, name: String },
+    Data1c {
+        offset: u8,
+        name: String,
+        #[serde(default)]
+        from: FieldSource,
+    },
     #[serde(rename = "data2b")]
-    Data2b { offset: u8, name: String },
+    Data2b {
+        offset: u8,
+        name: String,
+        #[serde(default)]
+        from: FieldSource,
+    },
     #[serde(rename = "data2c")]
-    Data2c { offset: u8, name: String },
+    Data2c {
+        offset: u8,
+        name: String,
+        #[serde(default)]
+        from: FieldSource,
+    },
     #[serde(rename = "byteEnum")]
     ByteEnum {
         offset: u8,
         name: String,
+        #[serde(default)]
+        from: FieldSource,
         #[serde(rename = "option")]
         options: ByteEnumList,
     },
     #[serde(rename = "bcd")]
-    Bcd { offset: u8, name: String },
+    Bcd {
+        offset: u8,
+        name: String,
+        #[serde(default)]
+        from: FieldSource,
+    },
     #[serde(rename = "bit")]
-    Bit { offset: u8, name: String },
+    Bit {
+        offset: u8,
+        name: String,
+        #[serde(default)]
+        from: FieldSource,
+    },
     #[serde(rename = "word")]
-    Word { offset: u8, name: String },
+    Word {
+        offset: u8,
+        name: String,
+        #[serde(default)]
+        from: FieldSource,
+    },
     #[serde(rename = "string")]
     String {
         offset: u8,
         name: String,
+        #[serde(default)]
+        from: FieldSource,
         length: u8,
     },
+}
+
+impl PacketField {
+    pub fn source(&self) -> FieldSource {
+        match self {
+            PacketField::Byte { from, .. }
+            | PacketField::Data1b { from, .. }
+            | PacketField::Data1c { from, .. }
+            | PacketField::Data2b { from, .. }
+            | PacketField::Data2c { from, .. }
+            | PacketField::ByteEnum { from, .. }
+            | PacketField::Bcd { from, .. }
+            | PacketField::Bit { from, .. }
+            | PacketField::Word { from, .. }
+            | PacketField::String { from, .. } => *from,
+        }
+    }
 }
 
 #[derive(Debug, Deserialize, PartialEq)]

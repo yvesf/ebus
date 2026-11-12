@@ -125,44 +125,46 @@ fn dump(opts: &Opts) {
         }
         for f in p.fields.fields.unwrap() {
             match f {
-                model::PacketField::Byte { offset, name } => {
+                model::PacketField::Byte { offset, name, .. } => {
                     println!("        [{:02}] Byte: {}", offset, name);
                 }
-                model::PacketField::Data1b { offset, name } => {
+                model::PacketField::Data1b { offset, name, .. } => {
                     println!("        [{:02}] Data1b: {}", offset, name)
                 }
-                model::PacketField::Data1c { offset, name } => {
+                model::PacketField::Data1c { offset, name, .. } => {
                     println!("        [{:02}] Data1c: {}", offset, name)
                 }
-                model::PacketField::Data2b { offset, name } => {
+                model::PacketField::Data2b { offset, name, .. } => {
                     println!("        [{:02}] Data2b: {}", offset, name)
                 }
-                model::PacketField::Data2c { offset, name } => {
+                model::PacketField::Data2c { offset, name, .. } => {
                     println!("        [{:02}] Data1c: {}", offset, name)
                 }
                 model::PacketField::ByteEnum {
                     offset,
                     name,
                     options,
+                    ..
                 } => {
                     println!("        [{:02}] ByteEnum: {}", offset, name);
                     for o in options.0 {
                         println!("             [{:02}] {}", o.value, o.name);
                     }
                 }
-                model::PacketField::Bcd { offset, name } => {
+                model::PacketField::Bcd { offset, name, .. } => {
                     println!("        [{:02}] Bcd: {}", offset, name)
                 }
-                model::PacketField::Bit { offset, name } => {
+                model::PacketField::Bit { offset, name, .. } => {
                     println!("        [{:02}] Bit: {}", offset, name)
                 }
-                model::PacketField::Word { offset, name } => {
+                model::PacketField::Word { offset, name, .. } => {
                     println!("        [{:02}] Word: {}", offset, name)
                 }
                 model::PacketField::String {
                     offset,
                     name,
                     length,
+                    ..
                 } => {
                     println!("        [{:02}] String: {} / {}", offset, name, length)
                 }
