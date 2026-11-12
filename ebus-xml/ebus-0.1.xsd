@@ -86,6 +86,15 @@
     </sequence>
     <attribute name="offset" type="int" use="required" />
     <attribute name="name" type="string" use="required" />
+    <!-- from="slave": Feld aus der Antwort des Slaves statt aus den Nutzdaten des Masters -->
+    <attribute name="from" use="optional">
+      <simpleType>
+        <restriction base="string">
+          <enumeration value="master" />
+          <enumeration value="slave" />
+        </restriction>
+      </simpleType>
+    </attribute>
   </complexType>
 
 

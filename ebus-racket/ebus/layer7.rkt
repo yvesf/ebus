@@ -42,6 +42,11 @@
    (lambda (i) (and (pair? i) (member (car i) '(bit bcd data1b data1c byte data2b data2c word byteEnum))))
    (xexpr-path-list '(fields *) paket-definition)))
 
+;; #t if the field is read from the slave's answer (attribute from="slave")
+;; instead of the master's payload
+(define (field-from-slave? field)
+  (equal? "slave" (xexpr-path-first '((from)) field)))
+
 ;; returns the full device-definition
 (define (device address)
   (xexpr-path-first (list 'devices 'device (list 'address (number->string address))) (definition)))
@@ -55,10 +60,17 @@
   (define source-device-name (device-name (layer2-ebus-paket-source ebus-paket)))
   (cond ((and (not (false? paket-definition)) (not (false? source-device-name)))
          (define paket-id (string-append source-device-name "." (paket-name paket-definition)))
-         (define decoders (map (lambda (field) (create-decoder paket-id field)) (paket-fields paket-definition)))
          (define payload (layer2-ebus-paket-payload ebus-paket))
-         (for/list ([decoder decoders])
-           (decoder payload)))
+         (define body (layer2-ebus-paket-body ebus-paket))
+         ;; payload of the slave's answer, #f if the paket has none
+         (define payload-slave (and (layer2-ebus-body-masterslave? body)
+                                    (layer2-ebus-body-masterslave-payloadSlave body)))
+         ;; fields with from="slave" are skipped when there is no answer
+         (define fields (filter (lambda (field) (or payload-slave (not (field-from-slave? field))))
+                                (paket-fields paket-definition)))
+         (for/list ([field fields])
+           ((create-decoder paket-id field)
+            (if (field-from-slave? field) payload-slave payload))))
         (else (void (log-ebus7-info "Unknown Paket from source ~s(~s): ~s" 
                                     (layer2-ebus-paket-source ebus-paket) 
                                     source-device-name 
@@ -126,11 +138,10 @@
 (define (field-decoder-data2b lowByte highByte)
   (if (and (= highByte 128)  (= lowByte 0))
       (ersatzwert)
-      (if (= (bitwise-and highByte 128) 128)
-          (* -1 
-             (+ (+ 256 (bitwise-not highByte))
-                (/ (+ 256 (bitwise-not (+ lowByte 1))) 256.0)))
-          (+ highByte (/ lowByte 256.0)))))
+      ;; signed 16 bit, 1/256 steps
+      (let ([value (+ lowByte (* 256 highByte))])
+        (/ (if (>= value 32768) (- value 65536) value)
+           256.0))))
 
 ;; type data2c
 ;;    Beispiel für die Berechnung:
