@@ -216,12 +216,14 @@
     <packet primary="80" secondary="20" name="vorlauftemperatur">
       <description lang="de">see http://www.mikrocontroller.net/topic/91164</description>
       <fields>
-        <data2b offset="0" name="vorlauftemperaturIst">
+        <!-- Anfrage des Reglers: Status, 00, Soll (ganze Grad), ...
+             Das Soll steht in Byte 2; als data2b ab Offset 1 gelesen
+             (Low-Byte ist immer 00).
+             Antwort des Mischermoduls: 00, Status, Ist (data2b), ... -->
+        <data2b offset="2" name="vorlauftemperaturIst" from="slave">
           <description lang="de">Aktuelle Vorlauftemperatur
-            Mischerkreis</description>
+            Mischerkreis, aus der Antwort des Mischermoduls</description>
         </data2b>
-        <!-- Nutzdaten: Status, 00, Soll (ganze Grad), ... Das Soll steht in Byte 2;
-             als data2b ab Offset 1 gelesen (Low-Byte ist immer 00). -->
         <data2b offset="1" name="vorlauftemperaturSoll">
           <description lang="de">Soll Vorlaufteperatur
             Mischerkreis</description>
