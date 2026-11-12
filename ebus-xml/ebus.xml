@@ -220,7 +220,9 @@
           <description lang="de">Aktuelle Vorlauftemperatur
             Mischerkreis</description>
         </data2b>
-        <data2b offset="2" name="vorlauftemperaturSoll">
+        <!-- Nutzdaten: Status, 00, Soll (ganze Grad), ... Das Soll steht in Byte 2;
+             als data2b ab Offset 1 gelesen (Low-Byte ist immer 00). -->
+        <data2b offset="1" name="vorlauftemperaturSoll">
           <description lang="de">Soll Vorlaufteperatur
             Mischerkreis</description>
         </data2b>
